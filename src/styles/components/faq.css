@@ -1,0 +1,80 @@
+/* ═══════════════════════════════════════════════════════════════
+   FAQ
+   The panel animates with the grid-template-rows 0fr → 1fr trick,
+   so the height is interpolated by the browser without JS ever
+   measuring anything.
+   ═══════════════════════════════════════════════════════════════ */
+.faq {
+  display: grid;
+  gap: 10px;
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+.q {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--panel);
+  overflow: hidden;
+  transition: border-color var(--t-fast);
+}
+.q[data-open='true'] {
+  border-color: rgba(255, 176, 32, 0.32);
+}
+
+/* The question is a heading for assistive tech and a button for
+   everyone; wrapping the button in an h3 keeps both true without
+   adding a visual style of its own. */
+.q-head {
+  font: inherit;
+  margin: 0;
+}
+.q-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px clamp(1rem, 4vw, 1.25rem);
+  text-align: left;
+  font-family: var(--font-d);
+  font-size: clamp(0.9063rem, 0.85rem + 0.3vw, 0.9375rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.q-btn .i {
+  color: var(--ink-3);
+  transition:
+    transform var(--t-mid) var(--ease),
+    color var(--t-fast);
+}
+.q[data-open='true'] .q-btn .i {
+  transform: rotate(45deg);
+  color: var(--amber);
+}
+
+.q-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--t-mid) var(--ease);
+}
+.q[data-open='true'] .q-panel {
+  grid-template-rows: 1fr;
+}
+.q-panel > div {
+  overflow: hidden;
+}
+.q-panel p {
+  padding: 0 clamp(1rem, 4vw, 1.25rem) 20px;
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+  font-weight: 300;
+  text-wrap: pretty;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .q:not([data-open='true']):hover {
+    border-color: var(--line-2);
+  }
+}

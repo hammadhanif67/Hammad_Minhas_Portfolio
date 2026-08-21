@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   The original already used clamp() for its two big headings. Here
+   the same idea is applied consistently: every display size is a
+   single fluid rule, and the upper bound of each clamp is the exact
+   pixel value the original design shipped with, so desktop is
+   untouched and only the phone range gains headroom.
+   ═══════════════════════════════════════════════════════════════ */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-m);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 20px;
+}
+.eyebrow::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: var(--amber);
+  opacity: 0.5;
+  flex: 0 0 auto;
+}
+
+/* Identical to the original from 626px upward; below that the floor
+   drops from 32px to 28.8px so two-word lines stop crowding the
+   gutter on a 320px screen. */
+.sec-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 4.6vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin-bottom: 16px;
+  text-wrap: balance;
+}
+
+.sec-lede {
+  font-size: clamp(0.9688rem, 0.9rem + 0.35vw, 1.0625rem);
+  font-weight: 300;
+  color: var(--ink-2);
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+/* Long unbroken strings — a domain, an email address, a repo slug —
+   are the usual cause of a phone-width overflow. This is the shared
+   guard, applied by name wherever such a string can appear. */
+.breakable {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}

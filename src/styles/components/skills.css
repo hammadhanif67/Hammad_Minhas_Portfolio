@@ -1,0 +1,119 @@
+/* ═══════════════════════════════════════════════════════════════
+   SKILLS
+   The original stepped 1 → 2 → 3 columns at 700px and 1060px. The
+   auto-fit track below lands on the same counts at almost the same
+   widths, but it also handles every size in between, including the
+   820px iPad and the 2560px monitor, without another media query.
+   ═══════════════════════════════════════════════════════════════ */
+.skills-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.5rem), 1fr));
+}
+
+.skill-card {
+  position: relative;
+  padding: clamp(1.25rem, 4vw, 1.625rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--panel);
+  backdrop-filter: blur(var(--blur-panel));
+  -webkit-backdrop-filter: blur(var(--blur-panel));
+  overflow: hidden;
+  transition:
+    border-color 0.35s,
+    transform 0.35s var(--ease);
+}
+
+/* Cursor spotlight. --mx/--my are written by a pointer handler; the
+   paint itself never leaves the compositor. */
+.skill-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    400px circle at var(--mx, 50%) var(--my, 50%),
+    var(--amber-wash),
+    transparent 42%
+  );
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+
+.skill-head {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+.skill-head .ico-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r);
+}
+.skill-head h3 {
+  font-family: var(--font-d);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.skill-head p {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  position: relative;
+  z-index: 1;
+}
+.chip {
+  font-family: var(--font-m);
+  font-size: 11.5px;
+  padding: 6px 11px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  transition:
+    border-color 0.25s,
+    color 0.25s;
+}
+.chip.ice {
+  color: var(--ice);
+  border-color: rgba(138, 180, 255, 0.22);
+  background: var(--ice-wash);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skill-card:hover {
+    border-color: var(--line-2);
+    transform: translateY(-3px);
+  }
+  .skill-card:hover::after {
+    opacity: 1;
+  }
+  .skill-card:hover .chip {
+    border-color: rgba(255, 176, 32, 0.22);
+    color: var(--ink);
+  }
+}
+
+/* Touch has no cursor to follow, so the spotlight becomes a fixed
+   wash rising out of the icon corner. Same material, no hover. */
+@media (hover: none) {
+  .skill-card::after {
+    background: radial-gradient(340px circle at 16% 0%, var(--amber-wash), transparent 58%);
+    opacity: 1;
+  }
+}

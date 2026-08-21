@@ -1,0 +1,431 @@
+/* ═══════════════════════════════════════════════════════════════
+   PROJECTS — a plain stack on phones, a 3D coverflow from 768px
+
+   MOBILE (default)
+   The coverflow is a desktop control. On a phone it shows one card
+   at 80vw with two neighbours bleeding off both edges, hides four
+   of the five projects behind a timer, and asks a thumb to swipe a
+   rotated plane. Below 768px the section is simply five cards in a
+   column: every project visible, full width, in order, no autoplay,
+   no arrows, no dots, nothing to discover. Scrolling is the control.
+
+   DESKTOP (≥768px)
+   The original composition returns in full — five cards on a shared
+   perspective, only the active one lit, neighbours rotated away and
+   dimmed, advancing every 5 seconds and firing a radial burst
+   through the WebGL field so background and carousel move as one
+   system.
+
+   Two things changed from the original implementation, both fixing
+   real bugs rather than taste:
+
+   1. The stage was position:relative with a fixed
+      height:clamp(452px, 64vh, 510px) and absolutely positioned
+      cards. On a short phone 64vh falls under the floor and the
+      stage locks at 452px, less than the card needs: measured on the
+      VistechBot card the body overflowed by 40px at 320×568, and
+      .card-in's overflow:hidden cut the "Live site" and "Source"
+      buttons clean off. The cards share one CSS Grid cell now, so
+      the row grows to the tallest card and the clamp survives only
+      as a min-height — desktop keeps its 510px proportion exactly.
+
+   2. The neighbour offsets were pixel constants recomputed by a JS
+      resize handler. They are percentages of each card's own width
+      now (238/320 = 74.4%, 416/320 = 130%), so the browser rescales
+      the ladder on resize and JS only picks which rung a card is on.
+      At 768px a neighbour reaches 361px from centre against 384px of
+      half-viewport, so nothing bleeds off the edge any more either.
+   ═══════════════════════════════════════════════════════════════ */
+.carousel {
+  position: relative;
+}
+
+/* ── Mobile: five cards, one column ─────────────────────────────── */
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(0.875rem, 3vw, 1.125rem);
+}
+
+.card {
+  width: 100%;
+}
+
+.card-in {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  /* Opaque, and no backdrop-filter. Both for the same reason: these
+     cards overlap each other, so anything see-through shows the card
+     behind. Dropping the blur also takes five blurred layers off every
+     scrolled frame, and it was buying nothing — the WebGL field is
+     scoped to the hero, so below it there is only a flat gradient to
+     blur. */
+  background: var(--card-surface);
+  transition:
+    border-color 0.5s,
+    box-shadow 0.5s;
+}
+
+/* 16:9, not the original 16:10. Every screenshot on these cards is a
+   browser window, and browser windows are ~1.88 — at 16:10 the crop
+   had to take 15% off the width of each one, which is enough to throw
+   away half a layout (and did: the Resume Analyzer's content sits on
+   the right). At 16:9 the crop is 5.6%, 2.8% off each edge, and no
+   screenshot loses anything it needs. */
+.card-media {
+  position: relative;
+  aspect-ratio: 1600 / 850;
+  background: linear-gradient(150deg, #11141f, #080a11);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+.card-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* `contain`, never `cover`. The box and the files are both 1600×850
+     so there is nothing to letterbox in practice, but `contain` is the
+     guarantee: whatever ratio a future screenshot arrives at, it gets
+     shown whole instead of having its edges taken off. */
+  object-fit: contain;
+  /* Nothing is "inactive" in a stack, so nothing is dimmed. */
+  opacity: 1;
+}
+.card-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 44%, rgba(7, 8, 13, 0.8));
+}
+
+/* ── 768px and up: the coverflow ────────────────────────────────── */
+@media (min-width: 768px) {
+  .stage {
+    --x-1: 74.4%;
+    --x-2: 130%;
+
+    gap: 0;
+    min-height: clamp(452px, 64svh, 510px);
+    perspective: 1500px;
+    perspective-origin: 50% 46%;
+    transform-style: preserve-3d;
+  }
+
+  .card {
+    grid-area: 1 / 1;
+    align-self: stretch;
+    justify-self: center;
+    width: clamp(258px, 80vw, 320px);
+    transform: translate3d(var(--x, 0%), 0, var(--z, 0px)) rotateY(var(--ry, 0deg))
+      scale(var(--s, 1));
+    opacity: var(--o, 1);
+    z-index: var(--zi, 1);
+    pointer-events: var(--pe, auto);
+    transition:
+      transform 0.85s var(--ease),
+      opacity 0.7s var(--ease);
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+  }
+
+  /* Depth only reads when the cards overlap, so the drop shadow is
+     part of the coverflow rather than part of the card. Five stacked
+     60px-blur shadows on a scrolling phone are not worth what they
+     would add there. */
+  .card-in {
+    box-shadow: var(--shadow-card);
+  }
+  .card[data-active='true'] .card-in {
+    border-color: rgba(255, 176, 32, 0.42);
+    box-shadow: var(--shadow-card-on);
+  }
+
+  .card-media img {
+    opacity: 0.8;
+    transition: opacity 0.6s;
+  }
+  /* The active card used to also scale its image to 1.04. That is a
+     4% zoom inside an overflow:hidden box — it cropped every edge off
+     the screenshot. The card is already marked out by its amber
+     border, its shadow and its full-opacity image. */
+  .card[data-active='true'] .card-media img {
+    opacity: 1;
+  }
+}
+
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  background: rgba(7, 8, 13, 0.84);
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
+  border: 1px solid var(--line-2);
+  font-family: var(--font-m);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.badge.live {
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #6ee7b7;
+}
+.badge.live i {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: #34d399;
+  flex: 0 0 auto;
+}
+.badge.paid {
+  border-color: rgba(255, 176, 32, 0.45);
+  color: var(--amber);
+  background: rgba(255, 176, 32, 0.12);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  flex: 1;
+  min-height: 0;
+}
+.card-meta {
+  font-family: var(--font-m);
+  font-size: 9.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.card-body h3 {
+  font-family: var(--font-d);
+  font-size: 1.3125rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  margin-bottom: 8px;
+}
+.card-tag {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  margin-bottom: 14px;
+  text-wrap: pretty;
+}
+.card-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 16px;
+}
+.card-stack span {
+  font-family: var(--font-m);
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+}
+.card-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.plink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-d);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background var(--t-fast),
+    color var(--t-fast),
+    border-color var(--t-fast),
+    transform var(--t-fast) var(--ease);
+}
+.plink.solid {
+  background: var(--amber);
+  color: var(--on-amber);
+}
+.plink.line {
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+}
+
+/* ── Controls ──────────────────────────────────────────────────── */
+.ctrls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.875rem, 4vw, 1.125rem);
+  margin-top: clamp(1.5rem, 4vw, 2.125rem);
+}
+
+.nav-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--r-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+  background: rgba(11, 13, 21, 0.6);
+  transition:
+    color var(--t-fast),
+    border-color var(--t-fast),
+    transform var(--t-fast) var(--ease),
+    background var(--t-fast);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.dotbtn {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  border-radius: var(--r-pill);
+  background: var(--line-2);
+  transition:
+    background 0.35s,
+    transform 0.35s var(--ease),
+    width var(--t-mid) var(--ease);
+}
+/* A 9px dot is an unfair target for a thumb. The painted dot keeps
+   its size; the tappable box around it becomes 33px tall. */
+.dotbtn::after {
+  content: '';
+  position: absolute;
+  inset: -12px -6px;
+}
+.dotbtn[data-on='true'] {
+  background: var(--amber);
+  width: 26px;
+  border-radius: var(--r-pill);
+}
+
+.timer {
+  position: relative;
+  width: min(340px, 72vw);
+  height: 2px;
+  margin: 20px auto 0;
+  background: var(--line);
+  overflow: hidden;
+  border-radius: var(--r-sm);
+}
+.timer i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--amber-grad);
+}
+.timer[data-run='true'] i {
+  animation: fillbar 5s linear forwards;
+}
+@keyframes fillbar {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+}
+.counter b {
+  color: var(--amber);
+  font-weight: 500;
+}
+.pause-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-3);
+}
+/* "hover to pause" is meaningless without a pointer, so the hint
+   names the gesture the device actually has. Both are in the DOM;
+   CSS picks one. */
+.hint-touch {
+  display: inline-flex;
+}
+.hint-hover {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hint-touch {
+    display: none;
+  }
+  .hint-hover {
+    display: inline-flex;
+  }
+  .plink.solid:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-amber-sm);
+  }
+  .plink.line:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+    transform: translateY(-2px);
+  }
+  .nav-btn:hover {
+    color: var(--amber);
+    border-color: var(--amber);
+    transform: scale(1.07);
+  }
+  .dotbtn:hover:not([data-on='true']) {
+    background: var(--ink-3);
+  }
+}
+
+/* With motion reduced there is no autoplay left to visualise, so the
+   progress bar stops claiming there is. */
+@media (prefers-reduced-motion: reduce) {
+  .timer {
+    display: none;
+  }
+  .card {
+    will-change: auto;
+  }
+}
+
+/* The "+N" that stands in for the tags a card does not show. */
+.card-stack__more {
+  color: var(--ink-2);
+  border-color: var(--line-2);
+  cursor: default;
+}

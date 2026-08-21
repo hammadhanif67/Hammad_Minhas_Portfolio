@@ -1,0 +1,49 @@
+/* ═══════════════════════════════════════════════════════════════
+   BACKGROUND — base gradient and grain
+   Two fixed layers below the content, shared by every section. The
+   animated WebGL field is not here: it belongs to the hero and is
+   clipped to it (see hero.css).
+   ═══════════════════════════════════════════════════════════════ */
+/* The base gradient scrolls with the page; the grain does not.
+   It used to be fixed as well, which pinned its amber glow to the top
+   of the *viewport* — so the glow rode down the screen with you and
+   sat over About, Skills and everything after it. The old full-page
+   glyph field used to blend that away; with the field scoped to the
+   hero there was nothing left hiding it.
+
+   Absolute inside #root spans the whole document instead, which puts
+   the amber where it was always meant to be: at the top of the page,
+   behind the hero, gone once you scroll past it. */
+.gl-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Uniform noise, so pinning it to the viewport is both correct and
+   cheaper than repainting it down a 6000px document. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The two glow sizes are in vh, not %, on purpose. Percentages here
+   would resolve against the element — which is now the height of the
+   whole document — and stretch a 450px glow into a 3000px one. vh
+   keeps both at the viewport-sized proportion the design had. */
+.gl-fallback {
+  background:
+    radial-gradient(ellipse 80% 55vh at 50% 0%, rgba(255, 176, 32, 0.1), transparent 60%),
+    radial-gradient(ellipse 70% 55vh at 20% 92%, rgba(138, 180, 255, 0.09), transparent 65%),
+    linear-gradient(180deg, #0a0c14 0%, #07080d 60%, #050609 100%);
+}
+
+.grain {
+  z-index: 1;
+  opacity: 0.13;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}

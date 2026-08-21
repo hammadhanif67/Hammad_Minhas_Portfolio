@@ -1,0 +1,113 @@
+/* ═══════════════════════════════════════════════════════════════
+   RESET — the original's reset, kept minimal so it never changes
+   the look of anything, plus the few extra rules a React app needs.
+   ═══════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  /* The project coverflow deliberately lets its neighbour cards bleed
+     past the viewport edge — that bleed IS the design. `clip` does the
+     same job as the original `overflow-x:hidden` without turning the
+     root into a scroll container, which keeps sticky positioning and
+     scroll anchoring working. `hidden` stays as the older-Safari
+     fallback because it is declared first. */
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-b);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Stops iOS Safari rubber-banding the page sideways under the
+     3D carousel while a swipe is being read as horizontal. */
+  overscroll-behavior-x: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  /* Paired with width/height attributes this reserves the right box
+     before the file lands, so cards never jump when an image decodes. */
+  height: auto;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--amber);
+  color: var(--on-amber);
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* Anchor jumps land below the floating nav instead of behind it. */
+:where(section, footer)[id] {
+  scroll-margin-top: var(--scroll-offset);
+}
+
+#root {
+  isolation: isolate;
+  /* Containing block for the page's base gradient, which is absolutely
+     positioned across the full document rather than pinned to the
+     viewport. `relative` does not affect the fixed nav, loader or
+     contact dock — only transform/filter/perspective would. */
+  position: relative;
+}

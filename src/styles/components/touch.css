@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════════════
+   TOUCH TARGETS
+
+   The design is built around small, precise controls — a 9px dot, a
+   26px brand mark, a 35px pill on a project card. They look right and
+   none of them is changed here. What changes is the size of the box
+   that responds to a thumb: a transparent ::after grows the hit area
+   outward while the painted control stays exactly where it was.
+
+   Only coarse pointers pay for it, so a mouse still gets hover and
+   click boundaries that match what it can see.
+   ═══════════════════════════════════════════════════════════════ */
+@media (pointer: coarse) {
+  .brand,
+  .nav-cta,
+  .plink,
+  .drawer a {
+    position: relative;
+  }
+
+  .brand::after,
+  .nav-cta::after,
+  .plink::after,
+  .drawer a::after {
+    content: '';
+    position: absolute;
+  }
+
+  /* 26px tall → 44px. */
+  .brand::after {
+    inset: -9px -4px;
+  }
+
+  /* 39px and 35–37px tall → 45px and 41–43px. */
+  .nav-cta::after,
+  .plink::after {
+    inset: -3px -2px;
+  }
+
+  .drawer a::after {
+    inset: -4px;
+  }
+
+  /* A row of 9px dots at a 9px gap has an 18px pitch — no amount of
+     padding gives each one a 40px target without the targets landing
+     on top of each other and turning a tap into a coin flip. Opening
+     the gap to 14px on touch makes room for a 23×43 box per dot with
+     no overlap. The dots themselves stay 9px. */
+  .dots {
+    gap: 14px;
+  }
+  .dotbtn::after {
+    inset: -17px -7px;
+  }
+}

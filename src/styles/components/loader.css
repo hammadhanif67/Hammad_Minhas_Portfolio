@@ -1,0 +1,59 @@
+/* ═══════════════════════════════════════════════════════════════
+   LOADER
+   ═══════════════════════════════════════════════════════════════ */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: max(var(--gutter), var(--safe-t)) var(--gutter) max(var(--gutter), var(--safe-b));
+  text-align: center;
+  transition:
+    opacity 0.8s var(--ease),
+    visibility 0.8s;
+}
+.loader[data-done='true'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ld-name {
+  font-family: var(--font-m);
+  font-size: clamp(0.95rem, 3.4vw, 1.35rem);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.ld-name b {
+  color: var(--amber);
+  font-weight: 700;
+}
+.ld-name i {
+  color: var(--ice);
+  font-style: normal;
+}
+
+.ld-track {
+  width: min(240px, 56vw);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.ld-fill {
+  height: 100%;
+  width: 0;
+  background: var(--amber-grad);
+}
+
+.ld-num {
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}

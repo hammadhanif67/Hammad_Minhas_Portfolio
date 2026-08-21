@@ -1,0 +1,77 @@
+/* ═══════════════════════════════════════════════════════════════
+   MARQUEE — a two-set track translated by exactly -50%, so the
+   second set lands where the first started and the loop is seamless.
+   The gap and the trailing padding therefore have to stay equal.
+   ═══════════════════════════════════════════════════════════════ */
+.marq {
+  --marq-gap: clamp(1.75rem, 5vw, 2.5rem);
+  --marq-fade: clamp(1.25rem, 9%, 6.75rem);
+
+  border-block: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.014);
+  padding-block: clamp(0.875rem, 2.6vw, 1.125rem);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 var(--marq-fade),
+    #000 calc(100% - var(--marq-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 var(--marq-fade),
+    #000 calc(100% - var(--marq-fade)),
+    transparent
+  );
+}
+
+.marq-track {
+  display: flex;
+  width: max-content;
+  animation: slide 30s linear infinite;
+  will-change: transform;
+}
+@keyframes slide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marq-set {
+  display: flex;
+  align-items: center;
+  gap: var(--marq-gap);
+  padding-right: var(--marq-gap);
+}
+
+.marq-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-d);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.marq-item .i {
+  color: var(--amber);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .marq:hover .marq-track {
+    animation-play-state: paused;
+  }
+}
+
+/* The global motion floor would collapse the duration to 0.01ms and
+   leave the track frozen halfway through its travel. Dropping the
+   animation entirely parks it at its start instead. */
+@media (prefers-reduced-motion: reduce) {
+  .marq-track {
+    animation: none;
+    transform: none;
+  }
+}

@@ -1,0 +1,38 @@
+/* ═══════════════════════════════════════════════════════════════
+   HAMMAD MINHAS — Front-End Developer  ·  v6, React
+
+   Load order is the cascade order, from least to most specific:
+   tokens define the vocabulary, the reset normalises, the global
+   layers style bare elements and shared classes, and the component
+   files style one section each.
+
+   Nothing below uses !important except the reduced-motion floor in
+   utilities.css, where overriding author styles is the point.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Foundations ────────────────────────────────────────────────── */
+@import './tokens.css';
+@import './reset.css';
+@import './typography.css';
+@import './layout.css';
+@import './utilities.css';
+
+/* ── Chrome ─────────────────────────────────────────────────────── */
+@import './components/background.css';
+@import './components/loader.css';
+@import './components/nav.css';
+@import './components/footer.css';
+@import './components/contact-dock.css';
+
+/* ── Sections, in page order ────────────────────────────────────── */
+@import './components/hero.css';
+@import './components/marquee.css';
+@import './components/about.css';
+@import './components/skills.css';
+@import './components/carousel.css';
+@import './components/process.css';
+@import './components/faq.css';
+@import './components/contact.css';
+
+/* ── Last, so it can grow any control's hit area ─────────────────── */
+@import './components/touch.css';

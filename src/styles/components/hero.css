@@ -1,0 +1,364 @@
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  min-height: 100svh; /* the short viewport — no jump when the iOS bar hides */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: clamp(7rem, 18vw, 8.75rem) max(clamp(3.5rem, 9vw, 4.375rem), var(--safe-b));
+  /* Containing block for the WebGL canvas, and the clip that keeps the
+     field inside this section instead of bleeding into About. */
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── The hero's WebGL field ─────────────────────────────────────
+   A canvas is a replaced element with an intrinsic 300×150 size, so
+   `inset: 0` alone would leave it at that size. The box has to be
+   stated; the renderer then owns only the drawing buffer, because
+   `setSize(w, h, false)` deliberately writes no inline dimensions. */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  /* No cursor to chase on a phone, and a full-hero element that
+     accepts pointer events is a good way to fight a scroll gesture.
+     Touch gets the idle orbit the build falls back to; a mouse gets
+     the tubes actually following it. */
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-canvas {
+    pointer-events: auto;
+  }
+}
+
+/* ── Scrim ──────────────────────────────────────────────────────
+   The tubes chase the cursor, so walking the mouse towards the copy
+   drags a bright, saturated, additively-blended light right onto it —
+   and the headline is gradient-filled text with no shadow to fall back
+   on. This layer sits between the field and the words: the field keeps
+   its full brightness at the edges, the text always has a settled
+   ground under it.
+
+   Three layers, deliberately: it stops the field bleeding into the
+   nav, holds the middle where the copy lives, and lets the bottom go
+   clear so the stats still sit over live animation. */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(var(--bg-rgb), 0.82) 0%, transparent 24%),
+    linear-gradient(
+      180deg,
+      rgba(var(--bg-rgb), 0.66) 0%,
+      rgba(var(--bg-rgb), 0.62) 55%,
+      rgba(var(--bg-rgb), 0.7) 100%
+    );
+}
+
+/* Above 900px the copy becomes a left-hand column, so the scrim leans
+   that way — but only leans. It never clears completely: the earlier
+   version faded to transparent by the right edge, which left half the
+   hero at full brightness and made the field read as loud on one side
+   and calm on the other. The floor is 0.55 now, so the whole hero sits
+   at the settled level, with a little extra weight over the words. */
+@media (min-width: 900px) {
+  .hero::after {
+    background:
+      linear-gradient(180deg, rgba(var(--bg-rgb), 0.6) 0%, transparent 26%),
+      linear-gradient(
+        90deg,
+        rgba(var(--bg-rgb), 0.8) 0%,
+        rgba(var(--bg-rgb), 0.7) 34%,
+        rgba(var(--bg-rgb), 0.58) 66%,
+        rgba(var(--bg-rgb), 0.55) 100%
+      );
+  }
+}
+
+/* The canvas and the scrim are both positioned with a z-index, which
+   puts them in the positioned layer — above static content in the same
+   stacking context. The copy has to be lifted past both of them or the
+   field paints straight over the headline. */
+.hero > .wrap {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Availability pill ─────────────────────────────────────────
+   At 320px the status line and the location together need ~380px,
+   far more than the ~284px a phone gives. Rather than truncate
+   either, the bar is allowed to wrap onto a second line below 34em
+   and holds a single line above it. */
+.pill {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 15px 7px 11px;
+  border-radius: var(--r);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  margin-bottom: 30px;
+  max-width: max-content;
+}
+@media (min-width: 34em) {
+  .pill {
+    flex-wrap: nowrap;
+  }
+}
+
+.dot {
+  position: relative;
+  display: inline-flex;
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+}
+.dot i {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-pill);
+  background: var(--amber);
+}
+.dot i:first-child {
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* A 1px vertical rule only reads as a separator when the two things
+   it separates share a line, so it is drawn from the width where
+   the pill stops wrapping. */
+.pill-div {
+  display: none;
+  width: 1px;
+  height: 12px;
+  background: var(--line-2);
+  flex: 0 0 auto;
+}
+@media (min-width: 34em) {
+  .pill-div {
+    display: block;
+  }
+}
+.pill-mono {
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* ── Headline ──────────────────────────────────────────────────
+   Identical to the original from 480px up; below that the floor
+   comes down from 41.6px to 38.4px so "developer" stops touching
+   both gutters on a 320px screen. */
+.hero h1 {
+  font-family: var(--font-d);
+  font-size: clamp(2.4rem, 8vw, 5.4rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 26px;
+  max-width: 16ch;
+}
+.hero h1 .grad {
+  background: linear-gradient(180deg, #fff 30%, rgba(255, 255, 255, 0.42));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero h1 .hl {
+  color: var(--amber);
+  position: relative;
+  white-space: nowrap;
+}
+.hero h1 .hl svg {
+  position: absolute;
+  left: 0;
+  bottom: -0.08em;
+  width: 100%;
+  height: 0.16em;
+  color: var(--amber);
+  opacity: 0.55;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  fill: none;
+}
+
+/* ── Scrambling role line ───────────────────────────────────────
+   min-height holds the row open so the swap never nudges the lede,
+   and tabular figures stop the glyph noise jittering the width. */
+.role {
+  font-family: var(--font-m);
+  font-size: 0.9375rem;
+  letter-spacing: 0.06em;
+  color: var(--ice);
+  min-height: 1.5em;
+  margin-bottom: 22px;
+}
+.caret {
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.hero-lede {
+  font-size: clamp(1rem, 1.6vw, 1.1875rem);
+  font-weight: 300;
+  color: var(--ink-2);
+  max-width: 60ch;
+  margin-bottom: 38px;
+  text-wrap: pretty;
+}
+.hero-lede b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────
+   Below 35em the row lets its buttons share the leftover space, so
+   two full-width-ish buttons beat three ragged short ones. From 35em
+   the buttons snap back to their natural widths — the original. */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: clamp(2.5rem, 7vw, 3.75rem);
+}
+.btn-row .btn {
+  flex: 1 1 auto;
+}
+@media (min-width: 35em) {
+  .btn-row .btn {
+    flex: 0 0 auto;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 14px 25px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-d);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: center;
+  transition:
+    transform var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    background var(--t-fast),
+    border-color var(--t-fast),
+    color var(--t-fast);
+}
+.btn-primary {
+  background: var(--amber);
+  color: var(--on-amber);
+}
+.btn-ghost {
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  color: var(--ink);
+}
+.btn-wa {
+  background: var(--green);
+  color: var(--on-green);
+}
+
+/* ── Stats ──────────────────────────────────────────────────────
+   The four-up grid used to start at 760px, where a 143px cell could
+   not hold "vistechbot.com" at 25.6px — the value was clipped by the
+   card. Four-up now waits for 1000px, where the cell is 203px and the
+   value fits, and the domain carries a <wbr> so narrow phones break
+   it at the dot instead of mid-word. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  max-width: 760px;
+}
+@media (min-width: 1000px) {
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.stat {
+  background: var(--stat-fill);
+  padding: clamp(1rem, 3.6vw, 1.25rem) clamp(0.875rem, 3.2vw, 1.125rem);
+  min-width: 0;
+  /* The cell, not the viewport, is what the long value has to fit
+     inside — .stats caps at 760px, so at 1440px each of the four
+     cells is still only ~189px wide. A container query sizes the
+     value against the box it actually lives in. */
+  container-type: inline-size;
+}
+.stat-n {
+  font-family: var(--font-d);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.stat-n em {
+  color: var(--amber);
+  font-style: normal;
+}
+/* The one stat whose value is a word rather than a number. It tracks
+   its own cell — 25.6px wherever the cell can hold the domain on one
+   line, easing down to ~14px in a 141px cell on a 320px phone. The
+   <wbr> before ".com" is the backstop if it ever cannot. */
+.stat-n--text {
+  font-size: clamp(1.0625rem, 12cqi, 1.6rem);
+  overflow-wrap: break-word;
+}
+.stat-l {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-amber);
+  }
+  .btn-ghost:hover {
+    transform: translateY(-2px);
+    background: var(--surface-2);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .btn-wa:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-green);
+  }
+}

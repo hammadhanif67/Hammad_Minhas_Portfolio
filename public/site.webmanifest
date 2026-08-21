@@ -1,0 +1,35 @@
+{
+  "name": "Hammad Minhas \u2014 Front-End Developer",
+  "short_name": "Hammad Minhas",
+  "description": "Front-end developer in Faisalabad, Pakistan. React, TypeScript and Tailwind.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#07080d",
+  "theme_color": "#07080d",
+  "lang": "en",
+  "categories": [
+    "portfolio",
+    "business"
+  ],
+  "icons": [
+    {
+      "src": "/brand/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

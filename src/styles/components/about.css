@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════════════════════
+   ABOUT
+   ═══════════════════════════════════════════════════════════════ */
+.about-grid {
+  display: grid;
+  gap: clamp(2rem, 5vw, 2.75rem);
+}
+@media (min-width: 940px) {
+  .about-grid {
+    grid-template-columns: 1.25fr 0.95fr;
+    gap: clamp(2.75rem, 5vw, 4.375rem);
+  }
+}
+
+.about-body p {
+  color: var(--ink-2);
+  font-weight: 300;
+  font-size: clamp(0.9688rem, 0.9rem + 0.35vw, 1.0625rem);
+  margin-bottom: 18px;
+  text-wrap: pretty;
+}
+.about-body p:last-child {
+  margin-bottom: 0;
+}
+.about-body b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* One column on a phone, two across the tablet range where the
+   column is wide enough to hold a fact side by side, then back to a
+   single column once it becomes the narrow right-hand rail. */
+.facts {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+@media (min-width: 940px) {
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.fact {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--surface);
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+.fact > div {
+  min-width: 0;
+}
+.fact .ico-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r);
+}
+.fact-k {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 5px;
+}
+.fact-v {
+  font-family: var(--font-d);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: -0.02em;
+}
+.fact-s {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fact:hover {
+    border-color: var(--line-2);
+    background: var(--surface-2);
+  }
+}

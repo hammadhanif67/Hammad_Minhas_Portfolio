@@ -1,0 +1,112 @@
+/* ═══════════════════════════════════════════════════════════════
+   CONTACT
+   ═══════════════════════════════════════════════════════════════ */
+.contact-head {
+  text-align: center;
+  margin-bottom: clamp(2rem, 5vw, 2.75rem);
+}
+.contact-head h2 {
+  font-family: var(--font-d);
+  font-size: clamp(2.1rem, 6.5vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.02;
+  margin-bottom: 18px;
+  text-wrap: balance;
+}
+.contact-head h2 span {
+  color: var(--amber);
+}
+.contact-head .sec-lede {
+  margin-inline: auto;
+}
+
+/* The four-up row waits for 1020px because that is the first width
+   where a 189px cell can hold the full email address on one line. */
+.cards {
+  display: grid;
+  gap: 14px;
+  max-width: 980px;
+  margin: 0 auto clamp(1.75rem, 5vw, 2.125rem);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 760px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1020px) {
+  .cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.ccard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(1.125rem, 4vw, 1.375rem);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: rgba(11, 13, 21, 0.64);
+  min-width: 0;
+  transition:
+    border-color 0.35s,
+    transform 0.35s var(--ease),
+    background 0.35s;
+}
+.ccard > div {
+  min-width: 0;
+}
+.ccard .ico-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.ccard.wa .ico-box {
+  color: var(--green);
+}
+.ccard.mail .ico-box {
+  color: var(--amber);
+}
+.ccard.li .ico-box {
+  color: #4d9fff;
+}
+.ccard.gh .ico-box {
+  color: var(--ink);
+}
+.ccard-k {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ccard-v {
+  font-family: var(--font-d);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ccard:hover {
+    transform: translateY(-4px);
+    background: var(--surface-2);
+  }
+  .ccard.wa:hover {
+    border-color: rgba(37, 211, 102, 0.5);
+  }
+  .ccard.mail:hover {
+    border-color: rgba(255, 176, 32, 0.5);
+  }
+  .ccard.li:hover {
+    border-color: rgba(77, 159, 255, 0.55);
+  }
+  .ccard.gh:hover {
+    border-color: var(--line-2);
+  }
+}

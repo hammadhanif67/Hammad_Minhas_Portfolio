@@ -1,0 +1,155 @@
+/* ═══════════════════════════════════════════════════════════════
+   TOKENS — duotone. Amber carries every interactive moment,
+   ice blue carries data and depth.
+
+   Every colour, font, radius and easing below is carried over from
+   the original v6 stylesheet unchanged. What is new is the second
+   half of the file: the container, section-rhythm, safe-area and
+   blur tokens, so a value used in several places is decided once
+   here rather than re-typed inside a dozen media queries.
+
+   Every token in this file is referenced by something. If one stops
+   being used, it comes out — an unused token is a decision nobody
+   made, sitting in the bundle pretending to be an API.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* ── Surfaces & lines ───────────────────────────────────────── */
+  --bg: #07080d;
+  /* Same colour as channels, for gradients that fade the page ground
+     to nothing. Keeping one source stops the two drifting apart. */
+  --bg-rgb: 7, 8, 13;
+  --surface: rgba(255, 255, 255, 0.028);
+  --surface-2: rgba(255, 255, 255, 0.055);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-2: rgba(255, 255, 255, 0.17);
+
+  /* Panel fill used by every raised card. Was repeated as a literal
+     rgba(11,13,21,.62) in six places in the original. */
+  --panel: rgba(11, 13, 21, 0.62);
+  --panel-solid: rgba(11, 13, 21, 0.82);
+  /* The project cards physically overlap in the coverflow, so their
+     surface is opaque rather than glass — at 0.82 the card behind
+     showed its content straight through the one in front. The dock
+     keeps --panel-solid: nothing sits behind it to bleed. */
+  --card-surface: #0b0d15;
+  --stat-fill: rgba(7, 8, 13, 0.74);
+
+  /* ── Ink ────────────────────────────────────────────────────── */
+  --ink: #f2f4f8;
+  --ink-2: #a8aec0;
+  --ink-3: #6a7184;
+
+  /* ── Accents ────────────────────────────────────────────────── */
+  --amber: #ffb020;
+  --amber-2: #ffd27a;
+  --amber-wash: rgba(255, 176, 32, 0.1);
+  --amber-line: rgba(255, 176, 32, 0.2);
+  --ice: #8ab4ff;
+  --ice-wash: rgba(138, 180, 255, 0.1);
+  --green: #25d366;
+  --on-amber: #07080d;
+  --on-green: #06210f;
+
+  --amber-grad: linear-gradient(90deg, var(--amber), var(--amber-2));
+
+  /* ── Type ───────────────────────────────────────────────────── */
+  --font-d: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  --font-b: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-m: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Motion ─────────────────────────────────────────────────── */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 0.3s;
+  --t-mid: 0.45s;
+  --t-slow: 0.85s;
+
+  /* ── Radii ──────────────────────────────────────────────────────
+     The portfolio is square. Every corner on the site — cards,
+     buttons, the nav bar, chips, icon tiles, badges, the carousel
+     dots, the WhatsApp button, focus rings — resolves through one of
+     these four, and all four are 0.
+
+     Nothing else in the codebase writes a literal border-radius, so
+     this block is the only place the decision lives. The original v6
+     values are kept in the comments: restoring the rounded design is
+     four edits, not a search across nineteen stylesheets.
+
+     --r-sm was 6–9px   (chips, tags, brand mark, timer, focus ring)
+     --r    was 11–14px (small cards, icon tiles, burger, inputs)
+     --r-lg was 20px    (project, skill, process and contact cards)
+     --r-pill was 999px / 50% (buttons, nav bar, badges, dots, FAB) */
+  --r-sm: 0;
+  --r: 0;
+  --r-lg: 0;
+  --r-pill: 0;
+
+  /* ── Container ──────────────────────────────────────────────────
+     Gutter tightens to 18px on a 320px phone and opens back out to
+     the original 22px from ~550px upward, so narrow devices get
+     roughly 8px more usable line length without touching the
+     desktop composition. */
+  --wrap: 1200px;
+  --gutter: clamp(1.125rem, 4vw, 1.375rem);
+
+  /* Section rhythm — 110px at the top end, matching the original
+     `padding: 110px 0`, easing down to 72px on small screens. */
+  --sec-pad: clamp(4.5rem, 9vw, 6.875rem);
+  --sec-head-gap: clamp(2.25rem, 5vw, 3.5rem);
+
+  /* ── Chrome ─────────────────────────────────────────────────── */
+  --nav-top: clamp(0.625rem, 2vw, 1rem);
+  --nav-h: 58px;
+  /* Anchor targets stop clear of the floating nav rather than
+     underneath it. */
+  --scroll-offset: calc(var(--nav-h) + var(--nav-top) * 2 + 0.5rem);
+
+  /* ── Safe areas ─────────────────────────────────────────────────
+     Resolve to 0px everywhere except notched iOS, so they are safe
+     to fold into ordinary max()/calc() expressions. */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+
+  /* ── Shadows ──────────────────────────────────────────────────
+     Every shadow on the site resolves through these five, and all
+     five are deliberately restrained: a shadow's job here is to say
+     "this sits slightly above the page", not to draw a dark cloud
+     under it.
+
+     The originals were built for a rounded design, where a wide soft
+     shadow reads as a lifted card. Against square corners the same
+     blur reads as smudge, and on hover a 30px glow reads as the
+     button catching fire. Blur is roughly a quarter of what it was
+     and opacity a little over half:
+
+       --shadow-card     0 24px 60px /.50  ->  0 6px 16px /.28
+       --shadow-card-on  0 28px 70px /.60  ->  0 8px 20px /.32
+       --glow-amber      0 12px 30px /.30  ->  0 3px 10px /.18
+       --glow-amber-sm   0  8px 24px /.28  ->  0 2px  8px /.16
+       --glow-green      0 12px 30px /.28  ->  0 3px 10px /.18 */
+  --shadow-card: 0 6px 16px rgba(0, 0, 0, 0.28);
+  --shadow-card-on: 0 8px 20px rgba(0, 0, 0, 0.32), 0 0 12px rgba(255, 176, 32, 0.07);
+  --glow-amber: 0 3px 10px rgba(255, 176, 32, 0.18);
+  --glow-amber-sm: 0 2px 8px rgba(255, 176, 32, 0.16);
+  --glow-green: 0 3px 10px rgba(37, 211, 102, 0.18);
+
+  /* ── Blur ───────────────────────────────────────────────────────
+     Lowered in one place for coarse pointers further down, so the
+     whole page gets cheaper glass on phones at once. */
+  --blur-nav: 18px;
+  --blur-card: 10px;
+  --blur-panel: 8px;
+}
+
+/* Backdrop blur is the single most expensive effect on this page and
+   phones pay for it on every scrolled frame. Coarse-pointer devices
+   get a lighter radius; the glass still reads, the compositor stops
+   sweating. */
+@media (pointer: coarse) {
+  :root {
+    --blur-nav: 12px;
+    --blur-card: 6px;
+    --blur-panel: 5px;
+  }
+}

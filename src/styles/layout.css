@@ -1,0 +1,45 @@
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT — container, section rhythm, stacking order
+   ═══════════════════════════════════════════════════════════════ */
+
+/* One container rule for the whole site.
+   Outer box caps at 1200px and the gutter lives inside it, exactly as
+   the original did — so the content column is 1156px on a desktop,
+   unchanged. What is new is that the gutter is fluid (18px on a phone,
+   22px from ~550px up) and takes the larger of itself and the
+   horizontal safe-area inset, so a landscape iPhone pushes its content
+   clear of the notch instead of under it. */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: max(var(--gutter), var(--safe-l)) max(var(--gutter), var(--safe-r));
+}
+
+.sec {
+  position: relative;
+  padding-block: var(--sec-pad);
+}
+.sec + .sec {
+  border-top: 1px solid var(--line);
+}
+
+.sec-head {
+  margin-bottom: var(--sec-head-gap);
+}
+
+.center {
+  text-align: center;
+}
+.center .eyebrow {
+  justify-content: center;
+}
+.center .sec-lede {
+  margin-inline: auto;
+}
+
+/* Everything that is not the fixed background sits on this layer. */
+.shell {
+  position: relative;
+  z-index: 2;
+}

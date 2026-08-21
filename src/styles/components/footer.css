@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════ */
+.foot {
+  border-top: 1px solid var(--line);
+  padding-block: clamp(2rem, 5vw, 2.375rem);
+  /* Room for the floating contact dock and, on an iPhone, the home
+     indicator underneath it. */
+  padding-bottom: calc(clamp(2rem, 5vw, 2.375rem) + var(--safe-b) + 3.5rem);
+}
+@media (min-width: 800px) {
+  .foot {
+    padding-bottom: calc(clamp(2rem, 5vw, 2.375rem) + var(--safe-b));
+  }
+}
+
+.foot-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+@media (min-width: 800px) {
+  .foot-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.foot-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.foot-social a {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+  transition:
+    color var(--t-fast),
+    border-color var(--t-fast),
+    transform var(--t-fast) var(--ease);
+}
+.foot-note {
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+  .foot-social a:hover {
+    color: var(--amber);
+    border-color: var(--amber);
+    transform: translateY(-2px);
+  }
+}

@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════════
+   CONTACT DOCK
+
+   Collapsed: one 46px square, down from the old 54px WhatsApp button,
+   and in the site's amber rather than a bright green blob — it opens
+   a contact menu now, so it should not be branded as one channel.
+
+   Opened: every channel in `contactCards`, each a labelled square,
+   cascading upward. Closing puts it back exactly as it was.
+   ═══════════════════════════════════════════════════════════════ */
+.dock {
+  position: fixed;
+  right: max(18px, calc(var(--safe-r) + 12px));
+  bottom: max(18px, calc(var(--safe-b) + 12px));
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.dock-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dock-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  /* `inert` already takes the collapsed rows out of the tab order and
+     out of hit-testing; visibility is the belt to that pair of braces,
+     for anything that does not honour inert. */
+  visibility: hidden;
+  translate: 0 10px;
+  transition:
+    opacity 0.28s var(--ease),
+    translate 0.28s var(--ease),
+    visibility 0.28s;
+}
+.dock[data-open='true'] .dock-row {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+}
+
+/* The channel name. Sits outside the square so the squares stay a
+   tidy 42px column under the button. */
+.dock-label {
+  padding: 5px 9px;
+  background: var(--panel-solid);
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
+  border: 1px solid var(--line);
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.dock-link {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: var(--panel-solid);
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+  transition:
+    color var(--t-fast),
+    border-color var(--t-fast),
+    background var(--t-fast);
+}
+/* Each channel keeps the tint it has in the Contact section. */
+.dock-link.wa {
+  color: var(--green);
+}
+.dock-link.mail {
+  color: var(--amber);
+}
+.dock-link.li {
+  color: #4d9fff;
+}
+.dock-link.gh {
+  color: var(--ink);
+}
+
+.dock-btn {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--amber);
+  color: var(--on-amber);
+  /* Was a hand-written 0 8px 24px — the one shadow on the site that
+     bypassed the tokens, and so the one that stayed heavy when the
+     rest were toned down. */
+  box-shadow: var(--glow-amber-sm);
+  transition:
+    transform var(--t-fast) var(--ease),
+    background var(--t-fast);
+}
+/* Open, it stops advertising and becomes a plain dismiss control. */
+.dock[data-open='true'] .dock-btn {
+  background: var(--surface-2);
+  color: var(--ink);
+  box-shadow: none;
+  border: 1px solid var(--line-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dock-btn:hover {
+    transform: translateY(-2px);
+  }
+  .dock-link:hover {
+    border-color: currentColor;
+    background: var(--surface-2);
+  }
+}
+
+/* A hidden list must not animate its way out on first paint. */
+@media (prefers-reduced-motion: reduce) {
+  .dock-row {
+    transition: none;
+    translate: none;
+  }
+}
+
+/* Out of the way over the Contact section, which already lists every
+   channel this dock shortcuts to. `inert` in the markup takes it out
+   of the tab order at the same time, so the fade is not hiding
+   something a keyboard can still reach. */
+.dock[data-hidden='true'] {
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 12px;
+  pointer-events: none;
+  transition:
+    opacity var(--t-fast) var(--ease),
+    translate var(--t-fast) var(--ease),
+    visibility var(--t-fast);
+}
+.dock {
+  transition:
+    opacity var(--t-fast) var(--ease),
+    translate var(--t-fast) var(--ease);
+}
