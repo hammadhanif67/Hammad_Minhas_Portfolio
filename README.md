@@ -1,5 +1,9 @@
 # Hammad Minhas — Portfolio
 
+🔗 **Live:** https://hammad-minhas-portfolio.vercel.app
+
+![Portfolio: screenshot of the live site](.github/assets/preview.jpg)
+
 The v6 single-file HTML portfolio, rebuilt as a React + TypeScript
 application. Same design, same copy, same animations; a component
 architecture underneath and a responsive layer that holds from 320px to
