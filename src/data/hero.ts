@@ -1,7 +1,8 @@
 import type { HeroStat, MarqueeItem } from '../types';
+import { projects } from './projects';
 
 export const heroStats: readonly HeroStat[] = [
-  { id: 'projects', countTo: 5, label: 'Projects built' },
+  { id: 'projects', countTo: projects.length, label: 'Projects built' },
   {
     id: 'domain',
     text: 'VistechBot',

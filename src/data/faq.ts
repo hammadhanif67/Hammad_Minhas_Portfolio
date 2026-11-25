@@ -5,7 +5,7 @@ export const faqEntries: readonly FaqEntry[] = [
     id: 'backend',
     question: 'Do you do back-end work too?',
     answer:
-      "No, and I'd rather tell you that up front than learn on your budget. I'm front-end: React, TypeScript, Tailwind, animation, responsive layout and API integration. If your project needs a back end, I'll work alongside whoever builds it and consume their endpoints cleanly.",
+      "Yes. Front end is where I spend most of my time, but I've shipped full-stack products: CampusFind runs on Express and MySQL, the AI Resume Analyzer on FastAPI, and Karakoram Trails on Cloudflare D1 with server-side booking rules. If your team already has a back end, I'll work alongside whoever owns it and consume their endpoints cleanly.",
   },
   {
     id: 'timezone',

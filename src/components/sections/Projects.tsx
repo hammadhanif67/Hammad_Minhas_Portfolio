@@ -11,12 +11,16 @@ import { ProjectCard } from './ProjectCard';
 /** Matches the coverflow breakpoint in carousel.css. */
 const COVERFLOW_AT = '(min-width: 768px)';
 
+const COUNT_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+/** "Eight builds" while the list is short enough to spell out, digits after that. */
+const countWord = (n: number) => COUNT_WORDS[n] ?? String(n);
+
 export function Projects() {
   const { ref: revealRef, ...revealProps } = useReveal<HTMLDivElement>();
   const reduced = useReducedMotion();
   const hasHover = useHasHover();
 
-  /* Below 768px the five projects render as a plain column, so there
+  /* Below 768px the projects render as a plain column, so there
      is no rotation to drive: no timer, no arrows, no dots, no swipe,
      and no arrow-key listener on the window. Scrolling is the whole
      interface. */
@@ -53,7 +57,7 @@ export function Projects() {
         id="projects"
         center
         eyebrow="Projects"
-        title="Five builds, all mine"
+        title={`${countWord(projects.length)} builds, all mine`}
         lede={
           <>
             Client work, a university project and tools I built to solve a problem I actually had.
