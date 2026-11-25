@@ -27,7 +27,7 @@ export const projects: readonly Project[] = [
     },
     links: [
       {
-        href: 'https://vistechbot.vercel.app/',
+        href: 'https://vistechbotaipk.vercel.app/',
         label: 'Live site',
         icon: 'external',
         solid: true,

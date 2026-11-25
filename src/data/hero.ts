@@ -4,13 +4,10 @@ export const heroStats: readonly HeroStat[] = [
   { id: 'projects', countTo: 5, label: 'Projects built' },
   {
     id: 'domain',
-    text: 'vistechbot.com',
+    text: 'VistechBot',
     accentText: true,
     long: true,
-    // Break opportunity before ".com", so a 320px cell wraps the
-    // domain at the dot rather than clipping or splitting mid-word.
-    breakAt: 10,
-    label: 'Live on a custom domain',
+    label: 'Live SaaS site on Vercel',
   },
   { id: 'reply', prefix: '<', countTo: 4, suffix: 'h', label: 'Reply time' },
   { id: 'focus', text: '100', suffix: '%', accentSuffix: true, label: 'Front-end focused' },
